@@ -3,7 +3,7 @@ var router = express.Router();
 
 var alexa = require('alexa-nodekit');
 
-router.get('/play', function (req, res) {
+router.post('/play', function (req, res) {
   if(!(req.body.request && req.body.request.type)) {
     return res.status(400).jsonp({message: 'Probably not an Amazon Echo request.'});
   }
