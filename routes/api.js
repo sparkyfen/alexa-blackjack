@@ -5,6 +5,26 @@ var alexa = require('alexa-nodekit');
 var deckofcards = require('node-deckofcards');
 var remaining = null;
 var deckId = null;
+var playerHand = [];
+var echoHand = [];
+var CARDS = [1,2,3,4,5,6,7,8,9,10];
+
+function convertCard(card) {
+  var faceCard = false;
+  if(isNaN(parseInt(card, 10))) {
+    faceCard = true;
+  }
+  var cardIndex = CARDS.indexOf(card);
+  if(!faceCard && cardIndex !== -1) {
+    return CARDS[cardIndex];
+  } else if (faceCard) {
+    if(card === 'JACK' || card === 'QUEEN' || card === 'KING') {
+      return 10;
+    } else {
+      return 11;
+    }
+  }
+ }
 
 router.post('/play', function (req, res) {
   if(!(req.body.request && req.body.request.type)) {
@@ -64,12 +84,12 @@ router.post('/play', function (req, res) {
           delete card.image;
           return card;
         });
-        var playerHand = [cards[0], cards[2]];
-        var echoHand = [cards[1], cards[3]];
-        alexa.response('Your hand has the ' + playerHand[0].value + ' of ' + playerHand[0].suit + ' and a '  + playerHand[1].value + ' of ' + playerHand[1].suit + ' the dealers hand has the ' + echoHand[1].value + ' of ' + echoHand[1].suit, {
+        playerHand = [cards[0], cards[2]];
+        echoHand = [cards[1], cards[3]];
+        alexa.response('Your hand has the ' + playerHand[0].value + ' of ' + playerHand[0].suit + ' and a '  + playerHand[1].value + ' of ' + playerHand[1].suit + ' for a total of ' + (convertCard(playerHand[0].value) + convertCard(playerHand[1].value))  + 'the dealers hand has the ' + echoHand[1].value + ' of ' + echoHand[1].suit, {
           title: 'Blackjack',
           subtitle: 'Hand played',
-          content: 'Player: ' + playerHand[0].value + ': ' + playerHand[0].suit + ' Echo: ' + echoHand[0].value + ': ' + playerHand[0].suit
+          content: 'Player: ' + playerHand[0].value + ': ' + playerHand[0].suit + ', ' + playerHand[1].value + ': ' + playerHand[1].suit + ' Echo: ' + echoHand[0].value + ': ' + playerHand[0].suit
         }, false, function (error, response) {
           if(error) {
             console.log(error);
@@ -77,6 +97,20 @@ router.post('/play', function (req, res) {
           }
           return res.jsonp(response);
         });
+      });
+    } else if (intent === 'PlayerHits') {
+      deckofcards.drawCard(deckId, 1, function (error, result) {
+        if(error) {
+          console.log(error);
+          return res.status(500).jsonp({message: error});
+        }
+        remaining = result.remaining;
+        var cards = result.cards.map(function (card) {
+          delete card.images;
+          delete card.image;
+          return card;
+        });
+        playerHand.push(cards[0]);
       });
     }
   } else {
