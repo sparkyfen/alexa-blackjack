@@ -116,7 +116,7 @@ router.post('/play', function (req, res) {
             alexa.response('Cards has been resuffled, please state restart game.', {
               title: 'Blackjack',
               subtitle: 'Game restart.',
-              content: 'Game has restarted, please restart game.'
+              content: 'Game has restarted, please say start game.'
             }, false, function (error, response) {
               if(error) {
                 console.log(error);
@@ -132,6 +132,22 @@ router.post('/play', function (req, res) {
             return card;
           });
           playerHand.push(cards[0]);
+          var total = 0;
+          for (var i = 0; i < playerHand.length; i++) {
+            var card = playerHand[i];
+            total += convertCard(card.value);
+          }
+          alexa.response('You drew the ' + cards[0].value + ' of ' + cards[0].suit + ' for a total of ' + total, {
+            title: 'Blackjack',
+            subtitle: 'Hand played.',
+            content: 'Player: ' + cards[0].value + ' of ' + cards[0].suit + ' for a total of ' + total
+          }, false, function (error, response) {
+            if(error) {
+              console.log(error);
+              return res.status(500).jsonp({message: error});
+            }
+            return res.jsonp(response);
+          });
         }
       });
     }
