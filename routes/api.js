@@ -86,7 +86,7 @@ router.post('/play', function (req, res) {
         });
         playerHand = [cards[0], cards[2]];
         echoHand = [cards[1], cards[3]];
-        alexa.response('Your hand has the ' + playerHand[0].value + ' of ' + playerHand[0].suit + ' and a '  + playerHand[1].value + ' of ' + playerHand[1].suit + ' for a total of ' + (convertCard(playerHand[0].value) + convertCard(playerHand[1].value))  + 'the dealers hand has the ' + echoHand[1].value + ' of ' + echoHand[1].suit, {
+        alexa.response('Your hand has the ' + playerHand[0].value + ' of ' + playerHand[0].suit + ' and a '  + playerHand[1].value + ' of ' + playerHand[1].suit + ' for a total of ' + (convertCard(playerHand[0].value) + convertCard(playerHand[1].value))  + '. The dealers hand has the ' + echoHand[1].value + ' of ' + echoHand[1].suit, {
           title: 'Blackjack',
           subtitle: 'Hand played',
           content: 'Player: ' + playerHand[0].value + ': ' + playerHand[0].suit + ', ' + playerHand[1].value + ': ' + playerHand[1].suit + ' Echo: ' + echoHand[0].value + ': ' + playerHand[0].suit
