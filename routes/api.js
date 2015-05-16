@@ -126,6 +126,7 @@ router.post('/play', function (req, res) {
             });
           });
         } else {
+          var busted = false;
           var cards = result.cards.map(function (card) {
             delete card.images;
             delete card.image;
@@ -137,7 +138,10 @@ router.post('/play', function (req, res) {
             var card = playerHand[i];
             total += convertCard(card.value);
           }
-          alexa.response('You drew the ' + cards[0].value + ' of ' + cards[0].suit + ' for a total of ' + total, {
+          if(total > 21) {
+            busted = true;
+          }
+          alexa.response('You drew the ' + cards[0].value + ' of ' + cards[0].suit + ' for a total of ' + total + (busted ? ' you busted.' : null), {
             title: 'Blackjack',
             subtitle: 'Hand played.',
             content: 'Player: ' + cards[0].value + ' of ' + cards[0].suit + ' for a total of ' + total
@@ -150,7 +154,7 @@ router.post('/play', function (req, res) {
           });
         }
       });
-    }
+    } else if ()
   } else {
     alexa.sessionEndedRequest(req.body);
     sessionId = alexa.sessionId;
