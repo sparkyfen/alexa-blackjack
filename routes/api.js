@@ -3,6 +3,8 @@ var router = express.Router();
 
 var alexa = require('alexa-nodekit');
 var deckofcards = require('node-deckofcards');
+var remaining = null;
+var deckId = null;
 
 router.post('/play', function (req, res) {
   if(!(req.body.request && req.body.request.type)) {
@@ -36,11 +38,11 @@ router.post('/play', function (req, res) {
           console.log(error);
           return res.status(500).jsonp({message: 'Could not create new deck.'});
         }
-        var remaining = result.remaining;
-        var deckId = result.deck_id;
+        remaining = result.remaining;
+        deckId = result.deck_id;
         alexa.response('Dealer is ready.', {
           title: 'Blackjack',
-          subtitle: 'Deal is ready.',
+          subtitle: 'Dealer is ready.',
           content: 'Dealer is ready.'
         }, false, function (error, response) {
           if(error) {
@@ -56,7 +58,7 @@ router.post('/play', function (req, res) {
           console.log(error);
           return res.status(500).jsonp({message: error});
         }
-        var remaining = result.remaining;
+        remaining = result.remaining;
         var cards = result.cards.map(function (card) {
           delete card.images;
           delete card.image;
