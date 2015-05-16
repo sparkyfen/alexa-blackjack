@@ -13,6 +13,8 @@ function convertCard(card) {
   var faceCard = false;
   if(isNaN(parseInt(card, 10))) {
     faceCard = true;
+  } else {
+    card = parseInt(card, 10);
   }
   var cardIndex = CARDS.indexOf(card);
   if(!faceCard && cardIndex !== -1) {
