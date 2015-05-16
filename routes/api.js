@@ -107,12 +107,32 @@ router.post('/play', function (req, res) {
           return res.status(500).jsonp({message: error});
         }
         remaining = result.remaining;
-        var cards = result.cards.map(function (card) {
-          delete card.images;
-          delete card.image;
-          return card;
-        });
-        playerHand.push(cards[0]);
+        if(remaining === 0) {
+          deckofcards.reshuffle(deckId, function (error, result) {
+            if(error) {
+              console.log(error);
+              return res.status(500).jsonp({message: 'Could not create new deck.'});
+            }
+            alexa.response('Cards has been resuffled, please state restart game.', {
+              title: 'Blackjack',
+              subtitle: 'Game restart.',
+              content: 'Game has restarted, please restart game.'
+            }, false, function (error, response) {
+              if(error) {
+                console.log(error);
+                return res.status(500).jsonp({message: error});
+              }
+              return res.jsonp(response);
+            });
+          });
+        } else {
+          var cards = result.cards.map(function (card) {
+            delete card.images;
+            delete card.image;
+            return card;
+          });
+          playerHand.push(cards[0]);
+        }
       });
     }
   } else {
