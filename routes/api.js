@@ -40,7 +40,7 @@ router.post('/play', function (req, res) {
         var deckId = result.deck_id;
         alexa.response('Dealer is ready.', {
           title: 'Blackjack',
-          subtitle: '',
+          subtitle: 'Deal is ready.',
           content: 'Dealer is ready.'
         }, false, function (error, response) {
           if(error) {
